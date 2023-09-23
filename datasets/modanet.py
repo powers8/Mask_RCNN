@@ -36,11 +36,16 @@ class ModaNetDataset(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         # load images ad masks
         #prendo l'immagine con id = index
+        # print('qqqqqqqqqqqqqqqqqqqqqqqqqq')
         img_file_name = self.imgs[idx]
+        # print(len(self.imgs))
         id = img_file_name.lstrip('0')
         id = id[:-4]
+        # print('xxxxxxxxxxxxxxxxx', img_file_name, id)
         img_id = int(id)
+        # print(img_id)
         img_path = os.path.join(self.dir_path, "Images", img_file_name)
+        # img_path = os.path.join(r"D:\BaiduNetdiskDownload\val2017", img_file_name)
         img = pil_loader(img_path)
         
         image_width, image_height = img.size
@@ -48,7 +53,8 @@ class ModaNetDataset(torch.utils.data.Dataset):
         # carico le ANNOTAZIONI di questa immagine
         ann_ids = self.annotations.getAnnIds(imgIds=[img_id])
         img_anns = self.annotations.loadAnns(ann_ids)
-        
+        # print('22222222', ann_ids, img_anns)
+        # exit()
         
         boxes = []
         labels = []
@@ -56,8 +62,10 @@ class ModaNetDataset(torch.utils.data.Dataset):
         accessories = []
         img = img.resize((self.width, self.height))
         for ann in img_anns:
+            # print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', ann.keys())
+            # exit()
             current_mask = self.annotations.annToMask(ann)
-            current_mask= (current_mask > 0).astype(np.uint8)
+            # current_mask = (current_mask > 0).astype(np.uint8)
             current_mask = cv2.resize(current_mask, (self.width, self.height), cv2.INTER_LINEAR)
             mask.append(current_mask)
             xmin = int(ann['bbox'][0])
@@ -81,6 +89,10 @@ class ModaNetDataset(torch.utils.data.Dataset):
         mask = torch.as_tensor(mask,  dtype=torch.uint8)
         accessories = torch.as_tensor(accessories,  dtype=torch.float32)
         boxes = torch.as_tensor(boxes, dtype=torch.float32)
+        #
+        # print("Shape of boxes:", boxes.shape)
+        # print("Content of boxes:", boxes)
+
         # area of the bounding boxes
         area = (boxes[:, 3] - boxes[:, 1]) * (boxes[:, 2] - boxes[:, 0])
         iscrowd = torch.zeros((boxes.shape[0],), dtype=torch.int64)

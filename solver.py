@@ -46,8 +46,8 @@ class Solver(object):
                 for param in self.net.parameters():
                     param.requires_grad = True
                 params = [p for p in self.net.parameters()]
-            for n,p in self.net.named_parameters():
-                print(n, p.requires_grad)
+            # for n,p in self.net.named_parameters():
+            #     print(n, p.requires_grad)
             if self.args.opt == "SGD":
                 self.optimizer = optim.SGD(params, lr=self.args.lr)
             elif self.args.opt == "Adam":
@@ -97,7 +97,7 @@ class Solver(object):
             for i, data in enumerate(prog_bar):
                 self.optimizer.zero_grad()
                 images, targets = data
-                images =  list(image.to(self.device) for image in images)
+                images = list(image.to(self.device) for image in images)
                 targets = [{k: v.to(self.device) for k, v in t.items()} for t in targets]
 
                 loss_dict = self.net(images, targets) # when given images and targets as input it will return the loss
@@ -229,9 +229,8 @@ class Solver(object):
                         accessory_target_list = []
 
                         for pred in prediction:
-                            pred['accessories'] = torch.where(pred['accessories'] < 0.5, 1 - pred['accessories'], pred['accessories'])
                             predicted_dict = dict(boxes = pred['boxes'],
-                            scores = pred['accessories'],
+                            scores = pred['scores'],
                             labels = torch.round(pred['accessories'])
                             )
                             accessory_pred_list.append(predicted_dict)
