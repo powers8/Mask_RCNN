@@ -12,7 +12,7 @@ def get_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--model_name', type=str, default="first_train", help='name of the model to be saved/loaded')
-    parser.add_argument('--annotations_file', type=str, default="modanet2018_instances_train.json",
+    parser.add_argument('--annotations_file', type=str, default=r"D:\Mask_RCNN\myCoco\coco\annotations\instances_train2017.json",
                         help='name of the annotations file')
 
     parser.add_argument('--epochs', type=int, default=10, help='number of epochs')
@@ -57,14 +57,13 @@ def main(args):
     else:
         DEVICE = torch.device("cpu")
 
-    IMAGE_SIZE = [400, 600]
+    IMAGE_SIZE = [224, 224]
 
     # classes: 0 index is reserved for background
     CLASSES = [
-        '__background__', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13'
+        '__background__', '1',
     ]
-    for i in range(14, 92):
-        CLASSES.append(str(i))
+
     ANN_FILE_NAME = args.annotations_file
 
     # use our dataset and defined transformations
@@ -77,8 +76,8 @@ def main(args):
     if args.manual_seed:
         torch.manual_seed(1)
     indices = torch.randperm(len(total_dataset)).tolist()
-    dataset = torch.utils.data.Subset(total_dataset, indices[:3000])
-    dataset_valid = torch.utils.data.Subset(total_dataset, indices[3000:4000])
+    dataset = torch.utils.data.Subset(total_dataset, indices[:60])
+    dataset_valid = torch.utils.data.Subset(total_dataset, indices[-12:])
     dataset_test = torch.utils.data.Subset(total_dataset, indices[-1000:])
 
     # define training and validation data loaders

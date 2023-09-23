@@ -20,7 +20,7 @@ class Solver(object):
     def __init__(self, train_loader, valid_loader, test_loader, device, classes, args):
         """Initialize configurations."""
         self.args = args
-        self.model_name = 'modanet_maskRCNN_{}.pth'.format(self.args.model_name)
+        self.model_name = 'crown_maskRCNN_{}.pth'.format(self.args.model_name)
 
         # Define the model
         self.classes = classes
@@ -35,7 +35,7 @@ class Solver(object):
         self.device = device
 
         # load a pretrained model
-        if self.args.resume_train or self.args.mode in ['test','evaluate']:
+        if self.args.resume_train or self.args.mode in ['test', 'evaluate']:
             self.load_model()
         
         if(self.args.mode == "train"):

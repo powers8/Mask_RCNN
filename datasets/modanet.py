@@ -33,17 +33,23 @@ class ModaNetDataset(torch.utils.data.Dataset):
 
 
 
+
     def __getitem__(self, idx):
         # load images ad masks
         #prendo l'immagine con id = index
         # print('qqqqqqqqqqqqqqqqqqqqqqqqqq')
         img_file_name = self.imgs[idx]
         # print(len(self.imgs))
-        id = img_file_name.lstrip('0')
-        id = id[:-4]
+        name, extension = os.path.splitext(img_file_name)
+        parts = name.split("_")
+        prename, number = parts
+        id = number.lstrip('0')
+        # id = id[:-4]
         # print('xxxxxxxxxxxxxxxxx', img_file_name, id)
+        # exit()
         img_id = int(id)
         # print(img_id)
+
         img_path = os.path.join(self.dir_path, "Images", img_file_name)
         # img_path = os.path.join(r"D:\BaiduNetdiskDownload\val2017", img_file_name)
         img = pil_loader(img_path)

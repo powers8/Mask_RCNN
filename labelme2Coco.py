@@ -58,7 +58,7 @@ class Lableme2CoCo:
         image['height'] = h
         image['width'] = w
         image['id'] = self.img_id
-        image['file_name'] = os.path.basename(path).replace(".json", ".jpg")
+        image['file_name'] = os.path.basename(path).replace(".json", ".png")
         return image
 
     def _annotation(self, shape):
@@ -91,9 +91,9 @@ class Lableme2CoCo:
 
 if __name__ == '__main__':
     # 改成自己的labelme格式的文件夹
-    labelme_path = r"D:\mask\Mask_RCNN\labelme"
+    labelme_path = r"D:\Mask_RCNN\labelme"
     # 新的存储地址(coco标注)
-    saved_coco_path = r"D:\mask\Mask_RCNN\myCoco/"
+    saved_coco_path = r"D:\Mask_RCNN\myCoco/"
     if not os.path.exists("%scoco/annotations/" % saved_coco_path):
         os.makedirs("%scoco/annotations/" % saved_coco_path)
     if not os.path.exists("%scoco/images/train2017/" % saved_coco_path):
@@ -104,7 +104,8 @@ if __name__ == '__main__':
     json_list_path = glob.glob(labelme_path + "/*.json")
     print('json_list_path: ', len(json_list_path))
     train_path, val_path = train_test_split(json_list_path, test_size=0.2, train_size=0.8)
-    print("train_n:", len(train_path), 'val_n:', len(val_path))
+    print(train_path, val_path)
+    # print("train_n:", len(train_path), 'val_n:', len(val_path))
 
     l2c_train = Lableme2CoCo()
     train_instance = l2c_train.to_coco(train_path)
