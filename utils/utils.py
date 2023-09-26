@@ -163,7 +163,7 @@ def visualize_bbox(image, prediction, target, classes):
         box=element.detach().cpu()
         scr=prediction[0]['scores'][index].detach().cpu()
         label = classes[prediction[0]['labels'][index].detach().cpu()]
-        if scr>0.3:
+        if scr>0.5:
             print(box)
             cv2.rectangle(
             bbox_img, 
@@ -202,8 +202,8 @@ def visualize_mask(image, prediction, target):
         msk=prediction[0]['masks'][index,0].detach().cpu()
         scr=prediction[0]['scores'][index].detach().cpu()
         label = prediction[0]['labels'][index].detach().cpu()
-        if scr>0.3:
-            mask = draw_segmentation_masks(mask,msk>0.3,1, MASK_COLORS[label-1])
+        if scr>0.5:
+            mask = draw_segmentation_masks(mask,msk>0.5,1, MASK_COLORS[label-1])
     
     for i in range(len(target['masks'])):
         real_mask = draw_segmentation_masks(real_mask,target['masks'][i]>0,1, MASK_COLORS[target['labels'][i]-1])
