@@ -13,6 +13,7 @@ from torchmetrics.detection.mean_ap import MeanAveragePrecision
 from torchmetrics.classification import BinaryAccuracy
 from torch.utils.tensorboard import SummaryWriter
 from utils.engine import evaluate
+import cv2
 
 class Solver(object):
     """Solver for training and testing."""
@@ -25,7 +26,7 @@ class Solver(object):
         # Define the model
         self.classes = classes
         self.num_classes = len(self.classes)
-
+        
         self.net = Mask_RCNN(self.num_classes, self.args).to(device)
 
         self.train_loader = train_loader
@@ -95,6 +96,8 @@ class Solver(object):
                 loss_dict_tb["loss_accessory"]=0
 
             for i, data in enumerate(prog_bar):
+                # print(i, "*****************************************************************", data)
+                # exit()
                 self.optimizer.zero_grad()
                 images, targets = data
                 images = list(image.to(self.device) for image in images)
@@ -193,13 +196,21 @@ class Solver(object):
                 break
             images, targets = data
             self.net.eval()
-            prediction = self.net([images[0]])
+            ac = images[0].unsqueeze(0)
+            print(type(ac), ac.dim())
+            prediction = self.net(ac)
             # for element in predicted_accessories_and_labels([images[0]], prediction, targets, self.args.cls_accessory):
             #     print(element)
             results = visualize_bbox(images[0],prediction,targets[0],self.classes)
+            print(results[1])
             results += visualize_mask(images[0],prediction,targets[0])
+            print(results[1])
+            # self.writer = SummaryWriter(self.args.checkpoint_path + '/runs/' + self.args.model_name + self.args.opt)
+
             concatenation = np.concatenate((results[0],results[1],results[2]), axis=1)
-            # image_name = str(epoch) + "_" + str(i) + "_image"
+            print(concatenation.shape)
+            image_name = "_" + str(i) + "_image.png" 
+            cv2.imwrite(image_name, concatenation.transpose([2, 1, 0]))
             # self.writer.add_image(image_name, concatenation)
             show(results)
             i+=1

@@ -12,11 +12,11 @@ def get_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--model_name', type=str, default="first_train", help='name of the model to be saved/loaded')
-    parser.add_argument('--annotations_file', type=str, default=r"D:\Mask_RCNN\myCoco\coco\annotations\instances_train2017.json",
+    parser.add_argument('--annotations_file', type=str, default=r"CoCo//instances_train2017.json",
                         help='name of the annotations file')
 
-    parser.add_argument('--epochs', type=int, default=10, help='number of epochs')
-    parser.add_argument('--batch_size', type=int, default=2, help='number of elements in batch size')
+    parser.add_argument('--epochs', type=int, default=30, help='number of epochs')
+    parser.add_argument('--batch_size', type=int, default=4, help='number of elements in batch size')
     parser.add_argument('--workers', type=int, default=0
                         , help='number of workers in data loader')
     parser.add_argument('--print_every', type=int, default=500, help='print losses every N iteration')
@@ -77,8 +77,8 @@ def main(args):
         torch.manual_seed(1)
     indices = torch.randperm(len(total_dataset)).tolist()
     dataset = torch.utils.data.Subset(total_dataset, indices[:60])
-    dataset_valid = torch.utils.data.Subset(total_dataset, indices[-12:])
-    dataset_test = torch.utils.data.Subset(total_dataset, indices[-1000:])
+    dataset_valid = torch.utils.data.Subset(total_dataset, indices[61:71])
+    dataset_test = torch.utils.data.Subset(total_dataset, indices[-2:])
 
     # define training and validation data loaders
     data_loader = DataLoader(
@@ -111,7 +111,7 @@ def main(args):
     if args.mode == "train":
         solver.train()
     elif args.mode == "test":
-        solver.test(img_count=50)
+        solver.test(img_count=2)
     elif args.mode == "evaluate":
         solver.evaluate(0)
     elif args.mode == "debug":
@@ -122,5 +122,5 @@ def main(args):
 
 if __name__ == "__main__":
     args = get_args()
-    print(args.pretrained)
+    print(args)
     main(args)

@@ -97,4 +97,9 @@ class Mask_RCNN(nn.Module):
         print(self.model.rpn.anchor_generator.sizes)
 
     def forward(self, images, targets=None):
-        return self.model(images, targets)
+        print('forward:', images, targets)
+        x = self.model(images.cuda(), targets)
+        print(x)
+        print('forward over -----------------------------------------------------------------')
+        return x
+        
